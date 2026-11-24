@@ -1,6 +1,16 @@
 #!/usr/bin/env python3
 """校验信息图形研究库的结构、链接与图片放置，不依赖第三方包。
 
+结构（v2.0.0，照 fengbaifan 库的「类型文件夹 + 一案例一目录」）：
+
+    02-信息图形类型案例/
+    ├─ <NN>-<类型名>/
+    │  ├─ 00-标签说明.md
+    │  └─ 案例/CASE-xxxx-名/
+    │     ├─ README.md  分析.md  原图.webp  原图来源.md
+    │     └─ 基础数据集.csv  辅助指标.csv  数据字典.md
+    └─ 案例索引.md 案例分析模板.md 数据表规范.md 案例写作规范.md …
+
 用法：python scripts/validate_repo.py
 通过时返回 0；发现问题返回 1 并逐条打印。
 """
@@ -15,29 +25,26 @@ from urllib.parse import unquote, urlparse
 ROOT = Path(__file__).resolve().parent.parent
 LOGIC = ROOT / '01-信息图形数据逻辑'
 CASES = ROOT / '02-信息图形类型案例'
-RECORDS = CASES / '案例记录'
-IMAGES = CASES / '案例图'
-DATASETS = CASES / '案例数据'
 GESTALT = ROOT / '04-格式塔知觉规则'
 
 IMAGE_SUFFIXES = {'.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.bmp'}
 REQUIRED_SECTIONS = ('## A ', '## B ', '## C ', '## D ', '## E ')
+CASE_SECTIONS = ('## A', '## B', '## C', '## D', '## E')
 REQUIRED_GESTALT_SECTIONS = ('## A ', '## B ', '## C ', '## D ', '## E ', '## F ', '## G ')
 GESTALT_RULE_COUNT = 14
-# 类型文档 01–18：课件 16 项 + 词云 + ISOTYPE
-TYPE_DOC_COUNT = 18
+TYPE_FOLDER_COUNT = 18
 REQUIRED_CASE_DOCS = (
     '00-类型总览.md',
-    '01-混合型信息图形-Mixed-Charts.md',
-    '02-文字型与列表型信息图形-Informational-List.md',
-    '03-时间轴型信息图形-Timeline.md',
     '案例索引.md',
     '案例分析模板.md',
     '数据表规范.md',
+    '案例写作规范.md',
     '课件来源与分类核验.md',
+    '设计准则与评价方法.md',
 )
-# 图版只允许出现在这两个目录里
-IMAGE_ALLOWED_DIRS = {IMAGES.resolve(), (CASES / '案例记录').resolve()}
+CASE_CORE_FILES = ('分析.md', 'README.md', '原图来源.md')
+DATASET_STATUS = {'complete', 'partial', 'none'}
+CSV_HEAD_FORBIDDEN = set('$% ()（）')
 
 issues: list[str] = []
 
@@ -63,40 +70,52 @@ for f in logic_files:
     if '../02-信息图形类型案例/' not in text:
         issues.append(f'{rel(f)} 缺少指向 02/ 的案例链接')
 
-# ---- 2. 02 层：类型文档数量与必备文档 ----
-type_docs = [p for p in CASES.glob('*.md') if re.match(r'^(0[1-9]|1[0-8])-', p.name)]
-if len(type_docs) != TYPE_DOC_COUNT:
-    issues.append(f'02/ 类型文档应为 {TYPE_DOC_COUNT} 份，实有 {len(type_docs)}')
+# ---- 2. 02 层：18 个类型文件夹 + 必备规范文档 ----
+type_docs = sorted(CASES.glob('*/00-标签说明.md'))
+if len(type_docs) != TYPE_FOLDER_COUNT:
+    issues.append(
+        f'02/ 类型文件夹应为 {TYPE_FOLDER_COUNT} 个（*/00-标签说明.md），实有 {len(type_docs)}'
+    )
 
 for name in REQUIRED_CASE_DOCS:
     if not (CASES / name).is_file():
         issues.append(f'02/ 缺少必备文档：{name}')
 
-# ---- 3. 案例记录与图版的配对 ----
-case_files = sorted(RECORDS.glob('CASE-*.md'))
-case_ids = {f.name[:9] for f in case_files}
-for f in case_files:
-    text = f.read_text('utf-8')
+# ---- 3. 案例目录：一案例一目录，核心文件齐全 ----
+case_dirs = sorted(p for p in CASES.glob('*/案例/CASE-*') if p.is_dir())
+case_ids = {d.name[:9] for d in case_dirs}
+
+for d in case_dirs:
+    for need in CASE_CORE_FILES:
+        if not (d / need).is_file():
+            issues.append(f'{rel(d)} 缺少 {need}')
+    ana = d / '分析.md'
+    if not ana.is_file():
+        continue
+    text = ana.read_text('utf-8')
     if 'case_id:' not in text:
-        issues.append(f'{rel(f)} 缺少 front matter 字段 case_id')
+        issues.append(f'{rel(ana)} 缺少 front matter 字段 case_id')
+    for name in CASE_SECTIONS:
+        if name not in text:
+            issues.append(f'{rel(ana)} 缺少段落「{name}」')
     m = re.search(r'image_path:\s*"([^"]+)"', text)
     if m:
-        target = (f.parent / unquote(m.group(1))).resolve()
+        target = (ana.parent / unquote(m.group(1))).resolve()
         if not target.is_file():
-            issues.append(f'{rel(f)} 指向的图版不存在：{m.group(1)}')
+            issues.append(f'{rel(ana)} 指向的图版不存在：{m.group(1)}')
+        elif target.parent != d.resolve():
+            issues.append(f'{rel(ana)} 的图版不在同一案例目录内：{m.group(1)}')
 
-for img in sorted(IMAGES.glob('*')):
-    if img.suffix.lower() not in IMAGE_SUFFIXES:
+# 图片必须落在 CASE 目录内
+for path in ROOT.rglob('*'):
+    if '.git' in path.parts or '.workbuddy' in path.parts:
         continue
-    if img.stem[:9].startswith('CASE-'):
-        if img.stem[:9] not in case_ids:
-            issues.append(f'图版 {rel(img)} 没有对应的案例记录')
-    else:
-        issues.append(f'图版命名不符合 CASE-xxxx-名 规则：{rel(img)}')
+    if path.is_file() and path.suffix.lower() in IMAGE_SUFFIXES:
+        if not (path.parent.name.startswith('CASE-') and path.parent.parent.name == '案例'):
+            issues.append(f'图片只能放在 02/…/案例/CASE-xxxx/ 内：{rel(path)}')
 
 # ---- 3b. 数据表（V3 规范）----
-DATASET_STATUS = {'complete', 'partial', 'none'}
-CSV_HEAD_FORBIDDEN = set('$% ()（）')
+pending_dict: list[str] = []
 
 
 def parse_front(text: str, key: str) -> str:
@@ -104,26 +123,26 @@ def parse_front(text: str, key: str) -> str:
     return m.group(1).strip().strip('"\'') if m else ''
 
 
-pending_dict: list[str] = []
-
-for f in case_files:
-    text = f.read_text('utf-8')
+for d in case_dirs:
+    ana = d / '分析.md'
+    if not ana.is_file():
+        continue
+    text = ana.read_text('utf-8')
     status = parse_front(text, 'dataset_status')
     if not status:
-        # 第 2 批待办：存量案例补 none 字典后即纳入强制校验
-        pending_dict.append(f.name[:9])
+        pending_dict.append(d.name[:9])
         continue
     if status not in DATASET_STATUS:
-        issues.append(f'{rel(f)} 的 dataset_status 非法：{status!r}')
+        issues.append(f'{rel(ana)} 的 dataset_status 非法：{status!r}')
         continue
 
     ddict = parse_front(text, 'dataset_dict')
     if not ddict:
-        issues.append(f'{rel(f)} 缺少 dataset_dict（任何状态都必须有数据字典）')
+        issues.append(f'{rel(ana)} 缺少 dataset_dict（任何状态都必须有数据字典）')
     else:
-        t = (f.parent / ddict).resolve()
+        t = (ana.parent / ddict).resolve()
         if not t.is_file():
-            issues.append(f'{rel(f)} 指向的数据字典不存在：{ddict}')
+            issues.append(f'{rel(ana)} 指向的数据字典不存在：{ddict}')
         else:
             dtext = t.read_text('utf-8')
             for need in ('不可推断', '复算'):
@@ -132,18 +151,13 @@ for f in case_files:
 
     dpath = parse_front(text, 'dataset_path')
     if status in ('complete', 'partial') and not dpath:
-        issues.append(f'{rel(f)} 状态为 {status} 但缺少 dataset_path')
+        issues.append(f'{rel(ana)} 状态为 {status} 但缺少 dataset_path')
     if dpath:
-        t = (f.parent / dpath).resolve()
+        t = (ana.parent / dpath).resolve()
         if not t.is_file():
-            issues.append(f'{rel(f)} 指向的基础数据集不存在：{dpath}')
+            issues.append(f'{rel(ana)} 指向的基础数据集不存在：{dpath}')
 
-if not DATASETS.is_dir():
-    issues.append('02/ 缺少 案例数据/ 目录')
-else:
-    for csvf in sorted(DATASETS.glob('CASE-*.csv')):
-        if csvf.stem[:9] not in case_ids:
-            issues.append(f'数据表 {rel(csvf)} 没有对应的案例记录')
+    for csvf in sorted(d.glob('*.csv')):
         with csvf.open(encoding='utf-8-sig', newline='') as fh:
             rows = list(csv.reader(fh))
         if not rows or not rows[0]:
@@ -157,14 +171,8 @@ else:
                 issues.append(f'{rel(csvf)} 表头列名含单位或特殊字符：{col}')
         for lineno, row in enumerate(rows[1:], start=2):
             if len(row) != len(head):
-                issues.append(
-                    f'{rel(csvf)} 第 {lineno} 行列数 {len(row)} ≠ 表头 {len(head)}'
-                )
+                issues.append(f'{rel(csvf)} 第 {lineno} 行列数 {len(row)} ≠ 表头 {len(head)}')
                 break
-
-    for d in sorted(DATASETS.glob('CASE-*-数据字典.md')):
-        if d.name[:9] not in case_ids:
-            issues.append(f'数据字典 {rel(d)} 没有对应的案例记录')
 
 # ---- 4. 04 层：14 条原则各一份，A–G 齐全 ----
 gestalt_files = sorted(GESTALT.glob('*.md'))
@@ -172,9 +180,7 @@ expected_rules = [f'{i:02d}-' for i in range(1, GESTALT_RULE_COUNT + 1)]
 rule_docs = [p for p in gestalt_files if p.name[:3] in expected_rules]
 
 if len(rule_docs) != GESTALT_RULE_COUNT:
-    issues.append(
-        f'04/ 应有 {GESTALT_RULE_COUNT} 份原则文档（01–14），实有 {len(rule_docs)}'
-    )
+    issues.append(f'04/ 应有 {GESTALT_RULE_COUNT} 份原则文档（01–14），实有 {len(rule_docs)}')
 for prefix in expected_rules:
     if not any(p.name.startswith(prefix) for p in gestalt_files):
         issues.append(f'04/ 缺少编号为 {prefix[:-1]} 的原则文档')
@@ -195,21 +201,12 @@ for f in rule_docs:
     if not log or f'{int(log.group(1)):02d}' != f.name[:2]:
         issues.append(f'{rel(f)} 的 front matter order 与文件名编号不一致')
 
-# ---- 5. 图片放置范围 ----
-for path in ROOT.rglob('*'):
-    if '.git' in path.parts or '.workbuddy' in path.parts:
-        continue
-    if path.is_file() and path.suffix.lower() in IMAGE_SUFFIXES:
-        if path.parent.resolve() not in IMAGE_ALLOWED_DIRS:
-            issues.append(f'图片只能放在 02-信息图形类型案例/案例图/：{rel(path)}')
-
-# ---- 6. 全库相对链接与跨文档锚点 ----
+# ---- 5. 全库相对链接与跨文档锚点 ----
 LINK = re.compile(r'!?\[[^\]\n]*\]\(([^)\n]+)\)')
 HEADING = re.compile(r'^#{1,6}\s+(.+?)\s*$', re.MULTILINE)
 
 
 def gh_slug(text: str) -> str:
-    """近似 GitHub 的标题锚点规则：小写、去标点、空格转连字符。"""
     s = text.strip().lower()
     s = ''.join(ch for ch in s if ch.isalnum() or ch in ' -_')
     return s.replace(' ', '-')
@@ -227,7 +224,6 @@ for f in md_files:
     if '.git' in f.parts or '.workbuddy' in f.parts:
         continue
     src = f.read_text('utf-8')
-    # 代码块与行内代码里的示例链接不算真链接
     src = re.sub(r'^\s*(```|~~~)[\s\S]*?^\s*\1[^\n]*(?:\n|$)', '', src, flags=re.MULTILINE)
     src = re.sub(r'`[^`\n]*`', '', src)
     for link in LINK.findall(src):
@@ -253,12 +249,12 @@ for f in md_files:
             if anchor.lower() not in anchor_cache[target]:
                 issues.append(f'锚点不存在：{rel(f)} -> {link}')
 
-# ---- 7. 案例索引与记录数一致 ----
+# ---- 6. 案例索引覆盖全部案例 ----
 index = CASES / '案例索引.md'
 if index.is_file():
     n_index = len(re.findall(r'CASE-\d{4}', index.read_text('utf-8')))
     if n_index < len(case_ids):
-        issues.append(f'案例索引只提到 {n_index} 次 CASE 编号，少于记录数 {len(case_ids)}')
+        issues.append(f'案例索引只提到 {n_index} 次 CASE 编号，少于案例目录数 {len(case_ids)}')
 
 if issues:
     for i in issues:
@@ -272,11 +268,11 @@ if pending_dict:
         f'按规范 §10 留待第 2 批补 none 字典：' + '、'.join(pending_dict)
     )
 
+n_csv = len(list(CASES.glob('*/案例/CASE-*/*.csv')))
+n_dict = len(list(CASES.glob('*/案例/CASE-*/数据字典.md')))
 print(
     f'OK: {len(md_files)} 份 Markdown、{len(logic_files)} 份逻辑定义、'
-    f'{len(type_docs)} 份类型文档、{len(case_files)} 条案例记录、'
-    f'{len(rule_docs)} 条格式塔原则、'
-    f'{len(list(DATASETS.glob("CASE-*.csv")))} 张 CSV、'
-    f'{len(list(DATASETS.glob("CASE-*-数据字典.md")))} 份数据字典；'
-    '相对链接与锚点全部有效，01/ 无图片，图版命名与配对一致，数据表状态与结构自洽。'
+    f'{len(type_docs)} 个类型文件夹、{len(case_dirs)} 个案例目录、'
+    f'{len(rule_docs)} 条格式塔原则、{n_csv} 张 CSV、{n_dict} 份数据字典；'
+    '相对链接与锚点全部有效，01/ 无图片，图片均在案例目录内，数据表状态与结构自洽。'
 )
