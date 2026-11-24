@@ -1,0 +1,8 @@
+﻿metric_id,subject,category,metric,value,unit,evidence_level,confidence,value_status,note
+C01,image,canvas_fact,image_width_px,420,px,图面转录,,reported,课件缩略图宽度
+C02,image,canvas_fact,image_height_px,564,px,图面转录,,reported,课件缩略图高度
+C03,chart,structure,table_row_count,24,count,图面计算,,reported,3 组顶部百分比 + 3 项中部同心圆 + 2 项国家指标 + 9 段年龄组 + 7 项社会指标 = 24
+C04,chart,structure,series_count,2,count,图面转录,,reported,1975 蓝 / 2014 红，一左一右
+C05,chart,structure,concentric_circle_count,3,count,图面转录,,reported,中部同心圆三层
+C06,chart,structure,top_percentage_group_count,3,count,图面转录,,reported,每组一图标 + 两值
+C07,portrait,canvas_fact,portrait_count,2,count,图面转录,,reported,左右两位国家元首肖像，构成对比的叙事锚点

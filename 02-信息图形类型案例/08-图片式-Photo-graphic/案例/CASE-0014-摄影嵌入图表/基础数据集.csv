@@ -1,0 +1,33 @@
+﻿metric_id,chart_section,entity_en,indicator_zh,value,unit,period,evidence_level,confidence,value_status,note
+A01,aging,Brazil,60 岁以上人口占比,9,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A02,aging,China,60 岁以上人口占比,11,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A03,aging,Denmark,60 岁以上人口占比,22,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A04,aging,France,60 岁以上人口占比,22,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A05,aging,Germany,60 岁以上人口占比,25,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A06,aging,India,60 岁以上人口占比,8,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A07,aging,Ireland,60 岁以上人口占比,16,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A08,aging,Italy,60 岁以上人口占比,26,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A09,aging,Japan,60 岁以上人口占比,28,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A10,aging,Netherlands,60 岁以上人口占比,20,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A11,aging,Poland,60 岁以上人口占比,18,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A12,aging,Russia,60 岁以上人口占比,17,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A13,aging,Spain,60 岁以上人口占比,22,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A14,aging,Sweden,60 岁以上人口占比,24,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A15,aging,Turkey,60 岁以上人口占比,8,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A16,aging,UK,60 岁以上人口占比,22,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+A17,aging,US,60 岁以上人口占比,17,pct,2007,图面可辨,mid,reported,柱顶数字与柱底国名逐柱对应；缩图下个别对齐待高清核对
+B01,obesity,France,成人肥胖率,10.5,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+B02,obesity,Germany,成人肥胖率,13.6,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+B03,obesity,Italy,成人肥胖率,9.9,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+B04,obesity,Netherlands,成人肥胖率,11.2,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+B05,obesity,Sweden,成人肥胖率,10.2,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+B06,obesity,Switzerland,成人肥胖率,8.1,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+B07,obesity,UK,成人肥胖率,24.0,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+B08,obesity,US,成人肥胖率,34.3,pct,,图面可辨,mid,reported,统计年份原图未标，仅标为成年人群体
+C01,nhs,NHS,员工总数（1998）,583742,person,1998,图面可辨,mid,reported,红圆内 TOTAL 行；与 2008 值构成可复算对
+C02,nhs,NHS,员工总数（2008）,760886,person,2008,图面可辨,mid,reported,同上；两圆之间印有增幅百分比
+C03,nhs,NHS,员工增幅,30.3,pct,1998–2008,图面可辨,low,reported,形似 30.3%，与两总数复算值 30.35% 基本吻合，可反证读数
+C04,nhs,NHS,医生数（1998）,,person,1998,缺失,,not_readable,圆内 Doctors 行字高不足 5px，无法确认位数
+C05,nhs,NHS,护理人员数（1998）,,person,1998,缺失,,not_readable,同上
+C06,nhs,NHS,医生数（2008）,,person,2008,缺失,,not_readable,同上
+C07,nhs,NHS,护理人员数（2008）,,person,2008,缺失,,not_readable,同上

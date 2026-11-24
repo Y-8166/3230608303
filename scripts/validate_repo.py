@@ -151,7 +151,7 @@ for d in case_dirs:
     text = ana.read_text('utf-8')
     status = parse_front(text, 'dataset_status')
     if not status:
-        pending_dict.append(d.name[:9])
+        issues.append(f'{rel(ana)} 缺少 dataset_status（三档之一，必填）')
         continue
     if status not in DATASET_STATUS:
         issues.append(f'{rel(ana)} 的 dataset_status 非法：{status!r}')
@@ -166,7 +166,7 @@ for d in case_dirs:
             issues.append(f'{rel(ana)} 指向的数据字典不存在：{ddict}')
         else:
             dtext = t.read_text('utf-8')
-            for need in ('不可推断', '复算'):
+            for need in ('不可推断', '复算', '计数结构'):
                 if need not in dtext:
                     issues.append(f'{rel(t)} 缺少「{need}」内容')
 
@@ -282,12 +282,6 @@ if issues:
         print('ERROR:', i)
     print(f'\n共 {len(issues)} 个问题')
     sys.exit(1)
-
-if pending_dict:
-    print(
-        f'WARNING: {len(pending_dict)} 条存量案例尚未声明 dataset_status，'
-        f'按规范 §10 留待第 2 批补 none 字典：' + '、'.join(pending_dict)
-    )
 
 n_csv = len(list(CASES.glob('*/案例/CASE-*/*.csv')))
 n_dict = len(list(CASES.glob('*/案例/CASE-*/数据字典.md')))

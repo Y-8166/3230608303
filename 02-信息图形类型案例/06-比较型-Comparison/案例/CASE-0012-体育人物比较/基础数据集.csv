@@ -1,0 +1,25 @@
+﻿metric_id,section,indicator_es,indicator_zh,value_1975,value_2014,unit,evidence_level,confidence,value_status,note
+H01,顶部三组百分比,,顶部指标 1（图标为拄杖人形，标签不可辨）,83,100,pct,图面转录,,reported,两值均在圆内大字印刷，可逐字读取；语义不可辨，不做猜测
+H02,顶部三组百分比,,顶部指标 2（图标为站立人形，标签不可辨）,28,53,pct,图面转录,,reported,同上；1975 侧为蓝、2014 侧为红，色彩承载年份而非类别
+H03,顶部三组百分比,,顶部指标 3（图标为持物人形，标签不可辨）,26,22,pct,图面转录,,reported,唯一下降的一项；降幅 4 个百分点为三者中唯一负值
+M01,中部同心圆,Renta por capital,人均收入（标签形似，未确认）,,,EUR,缺失,,not_readable,同心圆三层，数值与单位均不可辨，仅登记标签占位
+M02,中部同心圆,Población,人口（标签形似，未确认）,,,person,缺失,,not_readable,同上
+M03,中部同心圆,PIB,国内生产总值（标签形似，未确认）,,,EUR,缺失,,not_readable,同上；三圆为等比同心而非部分—整体，不构成饼图
+L01,国家指标行,Esperanza de vida,预期寿命,73.3,82.8,year,图面可辨,mid,reported,小数位清晰；单位「años」在图右侧
+L02,国家指标行,PIB por habitante,人均 GDP,,,EUR,缺失,,not_readable,条形端点数字粘连
+A00,年龄组,0 a 4 años,0–4 岁,,,person,缺失,,not_readable,首行标签被年份刻度带压住，按序位推断为 0–4，未确认
+A01,年龄组,5 a 9 años,5–9 岁,,,person,缺失,,not_readable,"条形端点数字形似 1,301,100"
+A02,年龄组,10 a 14 años,10–14 岁,,,person,缺失,,not_readable,"数字形似 3,251,900"
+A03,年龄组,15 a 24 años,15–24 岁,,,person,缺失,,not_readable,"数字形似 6,020,200"
+A04,年龄组,25 a 34 años,25–34 岁,,,person,缺失,,not_readable,"数字形似 5,254,300"
+A05,年龄组,35 a 44 años,35–44 岁,,,person,缺失,,not_readable,"数字形似 4,231,600"
+A06,年龄组,45 a 54 años,45–54 岁,,,person,缺失,,not_readable,"数字形似 4,715,300"
+A07,年龄组,55 a 64 años,55–64 岁,,,person,缺失,,not_readable,"数字形似 2,885,900"
+A08,年龄组,65 y más años,65 岁以上,,,person,缺失,,not_readable,"数字形似 3,250,400"
+I01,社会指标行,Inmigrantes censados,登记在册移民,,,person,缺失,,not_readable,"数字形似 828,603；仅右侧有值，左侧空白"
+I02,社会指标行,Desempleados,失业人口,,,person,缺失,,not_readable,"数字形似 5,035,000"
+I03,社会指标行,Empleados en el sector público,公共部门雇员,,,person,缺失,,not_readable,条形过长，端点数字被裁
+I04,社会指标行,Universitarios,大学生,,,person,缺失,,not_readable,"数字形似 1,254,000"
+I05,社会指标行,Matrimonios celebrados,登记结婚数,,,count,缺失,,not_readable,"数字形似 271,548"
+I06,社会指标行,Efectivos del ejército,军队员额,,,person,缺失,,not_readable,"数字形似 121,000"
+I07,社会指标行,Población reclusa,在押人数,,,person,缺失,,not_readable,"两值形似 60,000 与 44,764，方向异常，待高清核对"

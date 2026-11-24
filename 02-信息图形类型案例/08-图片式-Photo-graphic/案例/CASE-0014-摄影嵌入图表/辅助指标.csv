@@ -1,0 +1,9 @@
+﻿metric_id,subject,category,metric,value,unit,evidence_level,confidence,value_status,note
+S01,image,canvas_fact,image_width_px,420,px,图面转录,,reported,课件缩略图宽度
+S02,image,canvas_fact,image_height_px,494,px,图面转录,,reported,课件缩略图高度
+S03,chart,structure,chart_section_count,3,count,图面转录,,reported,老龄化 / 肥胖率 / NHS 员工增长，三组均为柱或圆
+S04,chart,structure,aging_bar_count,17,count,图面计算,,reported,由 A01–A17 计数
+S05,chart,structure,obesity_bar_count,8,count,图面计算,,reported,由 B01–B08 计数
+S06,chart,structure,photo_panel_count,17,count,图面可辨,mid,reported,柱体内嵌人像照片，与老龄化柱一一对应
+S07,chart,structure,chart_type,,,图面转录,,reported,全部为长度编码的柱形；NHS 段改用圆形面积 + 数字
+S08,aging,derived,aging_unweighted_mean,18.5,pct,图面计算,,reported,17 国取值算术平均；非人口加权，不得当作「全球水平」
