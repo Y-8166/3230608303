@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
 """校验信息图形研究库的结构、链接与图片放置，不依赖第三方包。
 
-结构（v2.0.0，照 fengbaifan 库的「类型文件夹 + 一案例一目录」）：
+结构（v3.2.0，六层板块 + docs/ 治理 + scripts/ 校验；02 层照 fengbaifan 库的「类型文件夹 + 一案例一目录」）：
 
+    01…06-<板块>/README.md          ← 六个板块各有统一入口
     02-信息图形类型案例/
-    ├─ <NN>-<类型名>/
-    │  ├─ 00-标签说明.md
-    │  └─ 案例/CASE-xxxx-名/
-    │     ├─ README.md  分析.md  原图.webp  原图来源.md
-    │     └─ 基础数据集.csv  辅助指标.csv  数据字典.md
-    └─ 案例索引.md 案例分析模板.md 数据表规范.md 案例写作规范.md …
+    ├─ <NN>-<类型名>/00-标签说明.md
+    ├─ <NN>-<类型名>/案例/
+    │  └─ README.md 或 CASE-xxxx-名/
+    │     ├─ README.md  分析.md  原图.webp  原图来源.md  数据字典.md
+    │     └─ 基础数据集.csv  辅助指标.csv
+    └─ 00-类型总览.md 案例索引.md 案例分析模板.md 数据表规范.md …
+    docs/                            ← 治理文档；根目录不另放 Markdown
+    scripts/validate_repo.py         ← 常驻；archive/ 为一次性脚本存档
 
 用法：python scripts/validate_repo.py
 通过时返回 0；发现问题返回 1 并逐条打印。
@@ -37,6 +40,7 @@ REQUIRED_GESTALT_SECTIONS = ('## A ', '## B ', '## C ', '## D ', '## E ', '## F 
 GESTALT_RULE_COUNT = 14
 TYPE_FOLDER_COUNT = 17
 REQUIRED_CASE_DOCS = (
+    'README.md',
     '00-类型总览.md',
     '案例索引.md',
     '案例分析模板.md',
@@ -44,8 +48,9 @@ REQUIRED_CASE_DOCS = (
     '案例写作规范.md',
     '课件来源与分类核验.md',
     '设计准则与评价方法.md',
+    '计数结构筛查.md',
 )
-CASE_CORE_FILES = ('分析.md', 'README.md', '原图来源.md')
+CASE_CORE_FILES = ('分析.md', 'README.md', '原图来源.md', '数据字典.md')
 DATASET_STATUS = {'complete', 'partial', 'none'}
 CSV_HEAD_FORBIDDEN = set('$% ()（）')
 
@@ -57,7 +62,7 @@ def rel(p: Path) -> str:
 
 
 # ---- 1. 01 层：恰好 5 份、含 A–E、无图 ----
-logic_files = sorted(LOGIC.glob('*.md'))
+logic_files = sorted(p for p in LOGIC.glob('*.md') if p.name != 'README.md')
 if len(logic_files) != 5:
     issues.append(f'01/ 应恰好有 5 份 .md，实有 {len(logic_files)}')
 
@@ -90,6 +95,45 @@ for path in ISOTYPE.rglob('*'):
 # 02 层不得再出现 ISOTYPE 类型文件夹（已升为 03）
 if any(p.name.startswith('18-ISOTYPE') for p in CASES.iterdir() if p.is_dir()):
     issues.append('02/ 仍有 18-ISOTYPE 文件夹，应已迁至顶层 03')
+
+# ---- 1c. v3.2.0 结构约定：统一入口 / 案例目录 / 阶段 / 根目录 / 脚本 ----
+LAYER_DIRS = (LOGIC, CASES, ISOTYPE, STYLE, GESTALT, THEME)
+
+for d in LAYER_DIRS:
+    if d.is_dir() and not (d / 'README.md').is_file():
+        issues.append(f'板块缺少统一入口 README.md：{d.name}')
+
+# 17 个类型文件夹各有 00-标签说明.md 与「非空」的 案例/ 子目录
+for td in sorted(CASES.glob('*/00-标签说明.md')):
+    cdir = td.parent / '案例'
+    if not cdir.is_dir():
+        issues.append(f'类型文件夹缺少 案例/ 子目录：{td.parent.name}')
+    elif not any(cdir.iterdir()):
+        issues.append(f'案例/ 为空且无占位说明：{rel(cdir)}')
+
+if not (STYLE / '图表与视觉编码.md').is_file():
+    issues.append('04/ 缺少 图表与视觉编码.md')
+
+for i in range(1, 9):
+    if not list(THEME.glob(f'{i:02d}-*/README.md')):
+        issues.append(f'06/ 缺少第 {i:02d} 阶段目录的 README.md')
+
+# 根目录只保留 README.md；治理文档集中在 docs/
+root_mds = sorted(p.name for p in ROOT.glob('*.md'))
+if root_mds != ['README.md']:
+    issues.append(f'根目录应只保留 README.md，实有：{root_mds}')
+for name in ('README.md', '导入与更新指南.md', '仓库对比分析-fengbaifan信息图形风格库.md'):
+    if not (ROOT / 'docs' / name).is_file():
+        issues.append(f'docs/ 缺少文档：{name}')
+
+# scripts/ 只留常驻校验，一次性脚本归 archive/
+if not (ROOT / 'scripts' / 'validate_repo.py').is_file():
+    issues.append('scripts/ 缺少常驻校验 validate_repo.py')
+if not (ROOT / 'scripts' / 'archive' / 'README.md').is_file():
+    issues.append('scripts/archive/ 缺少存档说明 README.md')
+for p in sorted((ROOT / 'scripts').glob('*.py')):
+    if p.name != 'validate_repo.py':
+        issues.append(f'scripts/ 下的一次性脚本应归入 archive/：{p.name}')
 
 # ---- 2. 02 层：17 个类型文件夹 + 必备规范文档 ----
 type_docs = sorted(CASES.glob('*/00-标签说明.md'))
@@ -195,19 +239,19 @@ for d in case_dirs:
                 issues.append(f'{rel(csvf)} 第 {lineno} 行列数 {len(row)} ≠ 表头 {len(head)}')
                 break
 
-# ---- 4. 04 层：14 条原则各一份，A–G 齐全 ----
+# ---- 4. 05 层：14 条原则各一份，A–G 齐全 ----
 gestalt_files = sorted(GESTALT.glob('*.md'))
 expected_rules = [f'{i:02d}-' for i in range(1, GESTALT_RULE_COUNT + 1)]
 rule_docs = [p for p in gestalt_files if p.name[:3] in expected_rules]
 
 if len(rule_docs) != GESTALT_RULE_COUNT:
-    issues.append(f'04/ 应有 {GESTALT_RULE_COUNT} 份原则文档（01–14），实有 {len(rule_docs)}')
+    issues.append(f'05/ 应有 {GESTALT_RULE_COUNT} 份原则文档（01–14），实有 {len(rule_docs)}')
 for prefix in expected_rules:
     if not any(p.name.startswith(prefix) for p in gestalt_files):
-        issues.append(f'04/ 缺少编号为 {prefix[:-1]} 的原则文档')
+        issues.append(f'05/ 缺少编号为 {prefix[:-1]} 的原则文档')
 
 if not (GESTALT / '00-总览与索引.md').is_file():
-    issues.append('04/ 缺少 00-总览与索引.md')
+    issues.append('05/ 缺少 00-总览与索引.md')
 
 for f in rule_docs:
     text = f.read_text('utf-8')
@@ -285,9 +329,13 @@ if issues:
 
 n_csv = len(list(CASES.glob('*/案例/CASE-*/*.csv')))
 n_dict = len(list(CASES.glob('*/案例/CASE-*/数据字典.md')))
+n_entry = sum(1 for d in LAYER_DIRS if (d / 'README.md').is_file())
+n_case_sub = sum(1 for td in CASES.glob('*/00-标签说明.md') if (td.parent / '案例').is_dir())
 print(
     f'OK: {len(md_files)} 份 Markdown、{len(logic_files)} 份逻辑定义、'
-    f'{len(type_docs)} 个类型文件夹、{len(case_dirs)} 个案例目录、'
-    f'{len(rule_docs)} 条格式塔原则、{n_csv} 张 CSV、{n_dict} 份数据字典；'
-    '相对链接与锚点全部有效，01/ 无图片，图片均在案例目录内，数据表状态与结构自洽。'
+    f'{n_entry}/6 个板块入口、{len(type_docs)} 个类型文件夹（{n_case_sub} 个含 案例/）、'
+    f'{len(case_dirs)} 个案例目录、{len(rule_docs)} 条格式塔原则、'
+    f'{n_csv} 张 CSV、{n_dict} 份数据字典；'
+    '相对链接与锚点全部有效，01/ 无图片，图片均在案例目录内，'
+    '六层结构、docs/ 与 scripts/ 归档、数据表状态均自洽。'
 )
