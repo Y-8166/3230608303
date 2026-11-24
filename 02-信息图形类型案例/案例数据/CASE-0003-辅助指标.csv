@@ -1,0 +1,11 @@
+﻿metric_id,subject,category,metric,value,unit,evidence_level,confidence,value_status,note
+T01,legend,legend_tick,cases_upper_bound,2,cases,图面转录,high,reported,色带最浅端刻度
+T02,legend,legend_tick,cases_upper_bound,4,cases,图面转录,high,reported,
+T03,legend,legend_tick,cases_upper_bound,8,cases,图面转录,high,reported,
+T04,legend,legend_tick,cases_upper_bound,20,cases,图面可辨,mid,reported,字形较小，待高清核对
+T05,legend,legend_tick,cases_upper_bound,60,cases,图面可辨,mid,reported,字形较小，待高清核对
+T06,legend,legend_tick,cases_upper_bound,68775,cases,图面转录,high,reported,色带最深端刻度；连续标度上限，非等距档位
+C01,image,canvas_fact,image_width_px,420,px,图面转录,high,reported,课件嵌入缩略图宽度，非原图分辨率
+C02,image,canvas_fact,image_height_px,236,px,图面转录,high,reported,课件嵌入缩略图高度，非原图分辨率
+C03,legend,canvas_fact,legend_tick_count,6,count,图面计算,high,reported,由 T01–T06 计数得出
+C04,map,canvas_fact,zoom_control_count,2,count,图面转录,high,reported,左上 +／- 缩放按钮

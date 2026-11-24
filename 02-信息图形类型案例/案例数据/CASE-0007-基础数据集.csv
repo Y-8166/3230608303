@@ -1,0 +1,28 @@
+﻿metric_id,panel,panel_period,metric_label_en,metric_label_zh,value,unit,denominator,evidence_level,confidence,value_status,note
+M0101,Environmental Stewardship,2012,electricity_consumption,用电量,600000,kWh,,图面可辨,high,reported,"下方另形似 584,000 的数值，对比口径未标，未转录"
+M0102,Environmental Stewardship,2012,natural_gas_consumption,天然气用量,37000,therms,,图面可辨,mid,reported,"下方另形似 41,000 的数值，对比口径未标"
+M0103,Environmental Stewardship,2012,co2_equivalent_offset,二氧化碳当量抵消量,4800,tons,,图面可辨,low,reported,"单位与对象待高清核对；下方另有形似 1,300 的数值"
+M0104,Environmental Stewardship,2012,site_energy_intensity,场地能耗强度,20.6,,,图面可辨,mid,reported,原图未标单位
+M0105,Environmental Stewardship,2012,source_energy_intensity,一次能耗强度,50.6,,,图面可辨,low,reported,原图未标单位
+M0106,Environmental Stewardship,2012,carbon_footprint_group_1,碳足迹第一组,64500,,,图面可辨,low,reported,单位不可辨
+M0107,Environmental Stewardship,2012,carbon_footprint_group_2,碳足迹第二组,167100,,,图面可辨,low,reported,单位不可辨
+M0201,Transportation,2011,transit_access,可乘公共交通通勤的员工占比,54,pct,,图面可辨,high,reported,
+M0202,Transportation,2011,subsidized_transit_pass,享有交通补贴的员工占比,21,pct,,图面可辨,mid,reported,
+M0203,Transportation,2011,commute_distance_1_5mi,通勤距离 1–5 英里占比,21,pct,,图面可辨,mid,reported,分档区间标签字形模糊
+M0204,Transportation,2011,commute_distance_6_10mi,通勤距离 6–10 英里占比,20,pct,,图面可辨,mid,reported,同上
+M0205,Transportation,2011,commute_distance_11_15mi,通勤距离 11–15 英里占比,19,pct,,图面可辨,mid,reported,同上
+M0206,Transportation,2011,commute_distance_16_20mi,通勤距离 16–20 英里占比,10,pct,,图面可辨,mid,reported,同上
+M0207,Transportation,2011,commute_distance_26_30mi,通勤距离 26–30 英里占比,30,pct,,图面可辨,low,reported,分档缺 21–25；区间端点待高清核对
+M0208,Transportation,2011,drive_alone,独自驾车通勤占比,68,pct,,图面可辨,high,reported,
+M0301,Client Satisfaction,2011,satisfaction_item_1,满意度条目 1（标签不可辨）,97,pct,,图面可辨,mid,reported,分析者占位键，非原图文字
+M0302,Client Satisfaction,2011,satisfaction_item_2,满意度条目 2（标签不可辨）,97,pct,,图面可辨,mid,reported,同上
+M0303,Client Satisfaction,2011,satisfaction_item_3,满意度条目 3（标签不可辨）,97,pct,,图面可辨,mid,reported,同上
+M0304,Client Satisfaction,2011,satisfaction_item_4,满意度条目 4（标签不可辨）,99,pct,,图面可辨,mid,reported,同上
+M0305,Client Satisfaction,2011,satisfaction_item_5,满意度条目 5（标签不可辨）,97,pct,,图面可辨,mid,reported,同上
+M0306,Client Satisfaction,2011,employee_count,员工总数,258,count,,图面可辨,low,reported,与 WORKPLACE 栏 256 不一致，原因不明，两值并存不合并
+M0401,Workplace,2010–2011,employee_count,员工总数,256,count,,图面可辨,mid,reported,统计期标签形似 2010–2011
+M0402,Workplace,2010–2011,employee_engagement,员工敬业度得分,85,pct,,图面可辨,mid,reported,
+M0403,Workplace,2010–2011,leed_accredited_count,LEED 认证专业人员数,156,count,,图面可辨,high,reported,LEED Green Associates 与 LEED AP 合计
+M0404,Workplace,2010–2011,professional_development_hours,职业发展学时,2500,hours,,图面可辨,low,reported,两个圆点之一；两值口径差异未标注
+M0405,Workplace,2010–2011,professional_development_hours,职业发展学时,9025,hours,,图面可辨,low,reported,两个圆点之一；两值口径差异未标注
+M0406,Workplace,2010–2011,avg_hours_per_employee,人均学时,,hours,,缺失,,not_readable,标签可辨，数值模糊不可读

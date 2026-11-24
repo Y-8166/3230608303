@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+import csv
 import re
 import sys
 from pathlib import Path
@@ -16,6 +17,7 @@ LOGIC = ROOT / '01-信息图形数据逻辑'
 CASES = ROOT / '02-信息图形类型案例'
 RECORDS = CASES / '案例记录'
 IMAGES = CASES / '案例图'
+DATASETS = CASES / '案例数据'
 GESTALT = ROOT / '04-格式塔知觉规则'
 
 IMAGE_SUFFIXES = {'.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.bmp'}
@@ -31,6 +33,7 @@ REQUIRED_CASE_DOCS = (
     '03-时间轴型信息图形-Timeline.md',
     '案例索引.md',
     '案例分析模板.md',
+    '数据表规范.md',
     '课件来源与分类核验.md',
 )
 # 图版只允许出现在这两个目录里
@@ -90,6 +93,78 @@ for img in sorted(IMAGES.glob('*')):
             issues.append(f'图版 {rel(img)} 没有对应的案例记录')
     else:
         issues.append(f'图版命名不符合 CASE-xxxx-名 规则：{rel(img)}')
+
+# ---- 3b. 数据表（V3 规范）----
+DATASET_STATUS = {'complete', 'partial', 'none'}
+CSV_HEAD_FORBIDDEN = set('$% ()（）')
+
+
+def parse_front(text: str, key: str) -> str:
+    m = re.search(rf'^{key}:\s*(.*?)\s*$', text, flags=re.MULTILINE)
+    return m.group(1).strip().strip('"\'') if m else ''
+
+
+pending_dict: list[str] = []
+
+for f in case_files:
+    text = f.read_text('utf-8')
+    status = parse_front(text, 'dataset_status')
+    if not status:
+        # 第 2 批待办：存量案例补 none 字典后即纳入强制校验
+        pending_dict.append(f.name[:9])
+        continue
+    if status not in DATASET_STATUS:
+        issues.append(f'{rel(f)} 的 dataset_status 非法：{status!r}')
+        continue
+
+    ddict = parse_front(text, 'dataset_dict')
+    if not ddict:
+        issues.append(f'{rel(f)} 缺少 dataset_dict（任何状态都必须有数据字典）')
+    else:
+        t = (f.parent / ddict).resolve()
+        if not t.is_file():
+            issues.append(f'{rel(f)} 指向的数据字典不存在：{ddict}')
+        else:
+            dtext = t.read_text('utf-8')
+            for need in ('不可推断', '复算'):
+                if need not in dtext:
+                    issues.append(f'{rel(t)} 缺少「{need}」内容')
+
+    dpath = parse_front(text, 'dataset_path')
+    if status in ('complete', 'partial') and not dpath:
+        issues.append(f'{rel(f)} 状态为 {status} 但缺少 dataset_path')
+    if dpath:
+        t = (f.parent / dpath).resolve()
+        if not t.is_file():
+            issues.append(f'{rel(f)} 指向的基础数据集不存在：{dpath}')
+
+if not DATASETS.is_dir():
+    issues.append('02/ 缺少 案例数据/ 目录')
+else:
+    for csvf in sorted(DATASETS.glob('CASE-*.csv')):
+        if csvf.stem[:9] not in case_ids:
+            issues.append(f'数据表 {rel(csvf)} 没有对应的案例记录')
+        with csvf.open(encoding='utf-8-sig', newline='') as fh:
+            rows = list(csv.reader(fh))
+        if not rows or not rows[0]:
+            issues.append(f'{rel(csvf)} 缺少表头')
+            continue
+        head = rows[0]
+        for col in head:
+            if not col or col != col.strip() or ' ' in col:
+                issues.append(f'{rel(csvf)} 表头列名含空格或为空：{col!r}')
+            if CSV_HEAD_FORBIDDEN & set(col):
+                issues.append(f'{rel(csvf)} 表头列名含单位或特殊字符：{col}')
+        for lineno, row in enumerate(rows[1:], start=2):
+            if len(row) != len(head):
+                issues.append(
+                    f'{rel(csvf)} 第 {lineno} 行列数 {len(row)} ≠ 表头 {len(head)}'
+                )
+                break
+
+    for d in sorted(DATASETS.glob('CASE-*-数据字典.md')):
+        if d.name[:9] not in case_ids:
+            issues.append(f'数据字典 {rel(d)} 没有对应的案例记录')
 
 # ---- 4. 04 层：14 条原则各一份，A–G 齐全 ----
 gestalt_files = sorted(GESTALT.glob('*.md'))
@@ -191,9 +266,17 @@ if issues:
     print(f'\n共 {len(issues)} 个问题')
     sys.exit(1)
 
+if pending_dict:
+    print(
+        f'WARNING: {len(pending_dict)} 条存量案例尚未声明 dataset_status，'
+        f'按规范 §10 留待第 2 批补 none 字典：' + '、'.join(pending_dict)
+    )
+
 print(
     f'OK: {len(md_files)} 份 Markdown、{len(logic_files)} 份逻辑定义、'
     f'{len(type_docs)} 份类型文档、{len(case_files)} 条案例记录、'
-    f'{len(rule_docs)} 条格式塔原则；'
-    '相对链接与锚点全部有效，01/ 无图片，图版命名与配对一致。'
+    f'{len(rule_docs)} 条格式塔原则、'
+    f'{len(list(DATASETS.glob("CASE-*.csv")))} 张 CSV、'
+    f'{len(list(DATASETS.glob("CASE-*-数据字典.md")))} 份数据字典；'
+    '相对链接与锚点全部有效，01/ 无图片，图版命名与配对一致，数据表状态与结构自洽。'
 )
