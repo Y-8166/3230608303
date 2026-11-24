@@ -1,0 +1,26 @@
+﻿metric_id,subject,category,metric,value,unit,evidence_level,confidence,value_status,note
+T01,tick,axis_tick,tick_year,1906,year,图面转录,high,reported,右上；外圈刻度
+T02,tick,axis_tick,tick_year,1907,year,图面转录,high,reported,右上；外圈刻度
+T03,tick,axis_tick,tick_year,1908,year,图面转录,high,reported,右上；外圈刻度
+T04,tick,axis_tick,tick_year,1911,year,图面转录,high,reported,右下；外圈刻度
+T05,tick,axis_tick,tick_year,1915,year,图面转录,high,reported,右下；外圈刻度
+T06,tick,axis_tick,tick_year,1919,year,图面转录,high,reported,右下；外圈刻度
+T07,tick,axis_tick,tick_year,1925,year,图面转录,high,reported,底部；内圈刻度，与红字节点 1925 同处一列
+T08,tick,axis_tick,tick_year,1926,year,图面转录,high,reported,底部；内圈刻度
+T09,tick,axis_tick,tick_year,1928,year,图面转录,high,reported,底部；内圈刻度
+T10,tick,axis_tick,tick_year,1930,year,图面转录,high,reported,底部；内圈刻度
+T11,tick,axis_tick,tick_year,1934,year,图面转录,high,reported,左下；内圈刻度
+T12,tick,axis_tick,tick_year,1936,year,图面转录,high,reported,左下；内圈刻度
+T13,tick,axis_tick,tick_year,1937,year,图面转录,high,reported,左下；内圈刻度
+T14,tick,axis_tick,tick_year,1946,year,图面转录,high,reported,左；外圈刻度
+T15,tick,axis_tick,tick_year,1952,year,图面转录,high,reported,左；外圈刻度
+C01,image,canvas_fact,image_width_px,420,px,图面转录,high,reported,课件嵌入缩略图宽度，非原图分辨率
+C02,image,canvas_fact,image_height_px,420,px,图面转录,high,reported,课件嵌入缩略图高度，非原图分辨率
+C03,axis,canvas_fact,red_node_count,11,count,图面计算,high,reported,红色大号年份节点，由 N02–N12 计数
+C04,axis,canvas_fact,date_marker_count,2,count,图面计算,high,reported,起止日期：1883.5.18 与 1967.7.5
+C05,axis,canvas_fact,tick_count_outer,9,count,图面计算,mid,reported,外圈小字刻度，含 T01–T06、T14–T15，其余待复核
+C06,axis,canvas_fact,covered_span_years,84,year,图面计算,high,reported,1967−1883；日期取年，月日不计
+C07,axis,canvas_fact,start_end_gap_deg,30,deg,图面可辨,low,estimated,起止两红点在环顶的夹角，目测估计，未做像素测量
+C08,inner,canvas_fact,portrait_count,5,count,图面可辨,low,estimated,内圈人物头像，部分仅见轮廓
+C09,inner,canvas_fact,map_count,2,count,图面转录,high,reported,GERMANY 与 USA 两幅底图
+C10,inner,canvas_fact,phase_label_count,3,count,图面可辨,low,estimated,魏玛／德绍／柏林阶段标签，文字过小未逐字转录

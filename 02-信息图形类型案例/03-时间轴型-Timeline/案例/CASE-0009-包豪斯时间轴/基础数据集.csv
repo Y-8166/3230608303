@@ -1,0 +1,14 @@
+﻿node_id,seq,year_label,year_value,date_precision,node_type,title_zh,title_en,bearing,evidence_level,confidence,value_status,note
+N01,1,1883.5.18,1883,day,life_event,出生,Birth,顶部偏右,图面转录,high,reported,起点；红色圆点位于弧线顶端偏右，日期逐字可辨
+N02,2,1910,1910,year,building,法古斯工厂,Fagus Factory,右上,图面可辨,high,reported,玻璃幕墙厂房插图；中文「法古斯工厂」可辨
+N03,3,1920,1920,year,building,,,右,缺失,low,not_readable,中文仅辨出「包豪斯」词根，英文不可辨；不代拟
+N04,4,1925,1925,year,building,,,右中,缺失,low,not_readable,建筑为红色坡顶小屋群；标题整体不可辨
+N05,5,1925,1925,year,building,包豪斯大师住宅,Masters' Houses,右下,图面可辨,mid,reported,与 N04 同为 1925，两节点并列于环上，原图未标区分口径
+N06,6,1926,1926,year,building,包豪斯校舍,Bauhaus Building,底部偏右,图面可辨,mid,reported,长条低层带车间插图，形似德绍校舍侧翼
+N07,7,1928,1928,year,building,德绍住宅区,Settlement,底部,图面可辨,low,reported,仅辨出「德绍」「住宅区」；英文仅辨出 Settlement
+N08,8,1936,1936,year,building,,Impington Village College,左下,图面可辨,mid,reported,英文行形似 Impington Village College；中文不可辨
+N09,9,1937,1937,year,building,,,左下,缺失,low,not_readable,标题整体不可辨；建筑为低层长条带弧形屋面
+N10,10,1958,1958,year,building,,,左下偏上,缺失,low,not_readable,英文行形似某 Tower；未确认，不转录
+N11,11,1959,1959,year,building,大使馆,Embassy of the United States,左,图面可辨,low,reported,中文仅辨出「大使馆」；英文行形似 Embassy of the United States
+N12,12,1963,1963,year,building,芝加哥,,左上,图面可辨,low,reported,中文仅辨出「芝加哥」；英文不可辨，项目名未确认
+N13,13,1967.7.5,1967,day,life_event,逝世,Death,顶部偏左,图面转录,high,reported,终点；弧线在此与起点相邻，形成闭合环
