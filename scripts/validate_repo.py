@@ -25,14 +25,17 @@ from urllib.parse import unquote, urlparse
 ROOT = Path(__file__).resolve().parent.parent
 LOGIC = ROOT / '01-信息图形数据逻辑'
 CASES = ROOT / '02-信息图形类型案例'
-GESTALT = ROOT / '04-格式塔知觉规则'
+GESTALT = ROOT / '05-格式塔知觉规则'
+ISOTYPE = ROOT / '03-ISOTYPE信息图'
+STYLE = ROOT / '04-信息可视化风格'
+THEME = ROOT / '06-主题信息图形设计'
 
 IMAGE_SUFFIXES = {'.png', '.jpg', '.jpeg', '.gif', '.svg', '.webp', '.bmp'}
 REQUIRED_SECTIONS = ('## A ', '## B ', '## C ', '## D ', '## E ')
 CASE_SECTIONS = ('## A', '## B', '## C', '## D', '## E')
 REQUIRED_GESTALT_SECTIONS = ('## A ', '## B ', '## C ', '## D ', '## E ', '## F ', '## G ')
 GESTALT_RULE_COUNT = 14
-TYPE_FOLDER_COUNT = 18
+TYPE_FOLDER_COUNT = 17
 REQUIRED_CASE_DOCS = (
     '00-类型总览.md',
     '案例索引.md',
@@ -70,7 +73,25 @@ for f in logic_files:
     if '../02-信息图形类型案例/' not in text:
         issues.append(f'{rel(f)} 缺少指向 02/ 的案例链接')
 
-# ---- 2. 02 层：18 个类型文件夹 + 必备规范文档 ----
+# ---- 1b. 顶层六层齐全，03 层三份文档到位 ----
+for d in (LOGIC, CASES, ISOTYPE, STYLE, GESTALT, THEME):
+    if not d.is_dir():
+        issues.append(f'缺少顶层目录：{d.name}')
+
+for name in ('README.md', '00-ISOTYPE概念与方法.md', '01-图符语言与视觉编码.md'):
+    if not (ISOTYPE / name).is_file():
+        issues.append(f'03/ 缺少文档：{name}')
+
+# 03 层不得放图片，与 01 层同规则
+for path in ISOTYPE.rglob('*'):
+    if path.is_file() and path.suffix.lower() in IMAGE_SUFFIXES:
+        issues.append(f'03/ 内不放图片：{rel(path)}')
+
+# 02 层不得再出现 ISOTYPE 类型文件夹（已升为 03）
+if any(p.name.startswith('18-ISOTYPE') for p in CASES.iterdir() if p.is_dir()):
+    issues.append('02/ 仍有 18-ISOTYPE 文件夹，应已迁至顶层 03')
+
+# ---- 2. 02 层：17 个类型文件夹 + 必备规范文档 ----
 type_docs = sorted(CASES.glob('*/00-标签说明.md'))
 if len(type_docs) != TYPE_FOLDER_COUNT:
     issues.append(
