@@ -239,19 +239,35 @@ for d in case_dirs:
                 issues.append(f'{rel(csvf)} 第 {lineno} 行列数 {len(row)} ≠ 表头 {len(head)}')
                 break
 
-# ---- 4. 05 层：14 条原则各一份，A–G 齐全 ----
-gestalt_files = sorted(GESTALT.glob('*.md'))
+# ---- 4. 05 层：五分区骨架 + 14 条原则各一份，A–G 齐全 ----
+RULE_DIR = GESTALT / '01-规则库'
+GESTALT_PARTITIONS = (
+    '01-规则库', '02-案例库', '03-跨原则对照实验',
+    '04-设计实践经验汇编', '05-参考文献',
+)
+
+for part in GESTALT_PARTITIONS:
+    d = GESTALT / part
+    if not d.is_dir():
+        issues.append(f'05/ 缺少分区目录 {part}/')
+    elif part != '01-规则库' and not (d / 'README.md').is_file():
+        issues.append(f'05/{part}/ 缺少 README.md')
+
+rule_docs = sorted(RULE_DIR.glob('*.md')) if RULE_DIR.is_dir() else []
 expected_rules = [f'{i:02d}-' for i in range(1, GESTALT_RULE_COUNT + 1)]
-rule_docs = [p for p in gestalt_files if p.name[:3] in expected_rules]
 
 if len(rule_docs) != GESTALT_RULE_COUNT:
-    issues.append(f'05/ 应有 {GESTALT_RULE_COUNT} 份原则文档（01–14），实有 {len(rule_docs)}')
+    issues.append(f'05/01-规则库/ 应有 {GESTALT_RULE_COUNT} 份原则文档（01–14），实有 {len(rule_docs)}')
 for prefix in expected_rules:
-    if not any(p.name.startswith(prefix) for p in gestalt_files):
-        issues.append(f'05/ 缺少编号为 {prefix[:-1]} 的原则文档')
+    if not any(p.name.startswith(prefix) for p in rule_docs):
+        issues.append(f'05/01-规则库/ 缺少编号为 {prefix[:-1]} 的原则文档')
+for p in sorted(GESTALT.glob('*.md')):
+    if p.name[:3] in expected_rules:
+        issues.append(f'{rel(p)} 不应留在 05/ 层根，应归入 01-规则库/')
 
-if not (GESTALT / '00-总览与索引.md').is_file():
-    issues.append('05/ 缺少 00-总览与索引.md')
+for doc in ('README.md', '00-总览与索引.md', '99-证据分级与待办.md'):
+    if not (GESTALT / doc).is_file():
+        issues.append(f'05/ 缺少 {doc}')
 
 for f in rule_docs:
     text = f.read_text('utf-8')
